@@ -1,0 +1,19 @@
+{
+  "name": "texture-unpacker",
+  "version": "1.0.0",
+  "description": "A tool to unpack Phaser 3 spritesheets created with TexturePacker",
+  "main": "textureunpacker.js",
+  "scripts": {
+    "test": "node textureunpacker.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OctoCPPlus/texture-unpacker.git"
+  },
+  "author": "Octo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OctoCPPlus/texture-unpacker/issues"
+  },
+  "homepage": "https://github.com/OctoCPPlus/texture-unpacker#readme"
+}
