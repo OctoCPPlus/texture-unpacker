@@ -68,7 +68,9 @@ async function readAtlas(atlas, options) {
 }
 
 async function readTexture(texturePath, frames) {
+    // Read texture file
     this[texturePath] = await sharp(texturePath)
+    // Extract each frame from the texture
     for (const frame of frames) {
         await extractTexture(texturePath, frame)
     }
@@ -88,15 +90,20 @@ async function extractTexture(texturePath, frame) {
             fs.mkdirSync(dir)
         }
     }
+
     try {
+        // Grab texture
         await this[texturePath]
+            // Create a copy of the texture, so we can extract multiple frames
             .clone()
+            // Crop the texture to the frame
             .extract({
                 left: frame.frame.x,
                 top: frame.frame.y,
                 width: frame.frame.w,
                 height: frame.frame.h,
             })
+            // Extend the texture to the source size
             .extend({
                 left: frame.spriteSourceSize.x,
                 top: frame.spriteSourceSize.y,
@@ -104,7 +111,9 @@ async function extractTexture(texturePath, frame) {
                 right: frame.sourceSize.w - frame.spriteSourceSize.w - frame.spriteSourceSize.x,
                 background: { r: 0, g: 0, b: 0, alpha: 0 },
             })
+            // Convert to png
             .toFormat('png')
+            // Write to file
             .toFile(`${this.outputdir}/${frame.filename}.png`)
     } catch (err) {
         console.error(err)
