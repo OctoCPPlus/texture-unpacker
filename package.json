@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/OctoCPPlus/texture-unpacker/issues"
   },
-  "homepage": "https://github.com/OctoCPPlus/texture-unpacker#readme"
+  "homepage": "https://github.com/OctoCPPlus/texture-unpacker#readme",
+  "dependencies": {
+    "sharp": "^0.31.3"
+  }
 }
