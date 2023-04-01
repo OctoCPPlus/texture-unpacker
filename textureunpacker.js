@@ -6,10 +6,24 @@ let options = {}
 process.argv.forEach((val, index) => {
     switch (val) {
         case '-sd':
+        case '--sourcedir':
             options.sourcedir = process.argv[index + 1]
             break
         case '-od':
+        case '--outputdir':
             options.outputdir = process.argv[index + 1]
+            break
+        case '-to':
+        case '--textureonly':
+            options.textureonly = process.argv[index + 1]
+            break
+        case '-sw':
+        case '--sourcewidth':
+            options.sourcewidth = process.argv[index + 1]
+            break
+        case '-sh':
+        case '--sourceheight':
+            options.sourceheight = process.argv[index + 1]
             break
     }
 })
@@ -31,6 +45,22 @@ async function readAtlas(atlas, options) {
         if (this[dir].endsWith('/')) {
             this[dir] = this[dir].slice(0, -1)
         }
+    }
+
+    if (options.textureonly) {
+        // Get texture file name
+        const texturePath = `${this.sourcedir}/${options.textureonly}`
+
+        // Check if texture exists
+        if (!fs.existsSync(texturePath)) {
+            return console.error(`Texture ${texturePath} does not exist`)
+        }
+
+        if (!options.sourcewidth || !options.sourceheight) {
+            return console.error('Source width and height are required if JSON atlas is not provided')
+        }
+
+        return await readTextureNoAtlas(texturePath, parseInt(options.sourcewidth), parseInt(options.sourceheight))
     }
 
     // Get atlas file
@@ -73,6 +103,46 @@ async function readTexture(texturePath, frames) {
     // Extract each frame from the texture
     for (const frame of frames) {
         await extractTexture(texturePath, frame)
+    }
+}
+
+async function readTextureNoAtlas(texturePath, sourceWidth, sourceHeight) {
+    // Read texture file
+    this[texturePath] = await sharp(texturePath)
+
+    // Get width and height of texture
+    const metadata = await this[texturePath].metadata()
+    const width = metadata.width
+    const height = metadata.height
+
+    // Calculate number of frames in texture
+    const numFramesX = width / sourceWidth
+    const numFramesY = height / sourceHeight
+
+    // Extract each frame from the texture
+    for (let y = 0; y < numFramesY; y++) {
+        for (let x = 0; x < numFramesX; x++) {
+            const frame = {
+                filename: `${x}_${y}`,
+                frame: {
+                    x: x * sourceWidth,
+                    y: y * sourceHeight,
+                    w: sourceWidth,
+                    h: sourceHeight,
+                },
+                spriteSourceSize: {
+                    x: 0,
+                    y: 0,
+                    w: sourceWidth,
+                    h: sourceHeight,
+                },
+                sourceSize: {
+                    w: sourceWidth,
+                    h: sourceHeight,
+                },
+            }
+            await extractTexture(texturePath, frame)
+        }
     }
 }
 
