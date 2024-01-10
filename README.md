@@ -1,6 +1,6 @@
-# Phaser 3 Texture Unpacker
+# Texture Unpacker
 
-### Unpacks multi-atlas texture files made by <a href="https://www.codeandweb.com/texturepacker">TexturePacker</a> for Phaser 3.
+### Unpacks multi-atlas texture files made by <a href="https://www.codeandweb.com/texturepacker">TexturePacker</a> for Phaser 3 or PixiJS.
 
 </br>
 
@@ -16,7 +16,7 @@ This will take a JSON atlas from `./playerchar/male.json`, and output the frames
 
 ## Works with
 
--   Phaser 3 texture atlases and image only texture atlases
+-   Phaser 3 or PixiJS texture atlases and image only texture atlases
 -   Multi-pack enabled
 -   PNG, JPEG, WebP or TIFF formats
 -   Trimmed frames
@@ -24,7 +24,7 @@ This will take a JSON atlas from `./playerchar/male.json`, and output the frames
 
 ## Doesn't work with
 
--   Other frameworks
+-   Other frameworks (Some may work if they have similar JSON structure)
 -   Rotated frames
 -   Any other image formats
 
