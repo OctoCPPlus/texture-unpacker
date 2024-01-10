@@ -83,6 +83,25 @@ async function readAtlas(atlas, options) {
     let data = fs.readFileSync(atlasPath)
     let json = JSON.parse(data)
 
+    if (!json.textures) {
+        let texturePath = `${this.sourcedir}/${json.meta.image}`
+
+        // Check if texture exists
+        if (!fs.existsSync(texturePath)) {
+            console.error(`Texture ${texturePath} does not exist`);
+        }
+
+        let framesArr = []
+        for (const frame in json.frames) {
+            let frameObj = json.frames[frame]
+            if (!frameObj.filename) frameObj.filename = frame
+            framesArr.push(frameObj)
+        }
+
+        // Read texture file
+        return await readTexture(texturePath, framesArr)
+    }
+
     for (const texture of json.textures) {
         // Gets each the path of each texture in the atlas
         let texturePath = `${this.sourcedir}/${texture.image}`
@@ -162,6 +181,10 @@ async function extractTexture(texturePath, frame) {
     }
 
     try {
+        let filename = `${this.outputdir}/${frame.filename}`
+        if (!filename.endsWith('.png')) {
+            filename += '.png'
+        }
         // Grab texture
         await this[texturePath]
             // Create a copy of the texture, so we can extract multiple frames
@@ -184,7 +207,7 @@ async function extractTexture(texturePath, frame) {
             // Convert to png
             .toFormat('png')
             // Write to file
-            .toFile(`${this.outputdir}/${frame.filename}.png`)
+            .toFile(filename)
     } catch (err) {
         console.error(err)
     }
